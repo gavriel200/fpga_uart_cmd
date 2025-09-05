@@ -1,0 +1,19 @@
+<?xml version="1" encoding="UTF-8"?>
+<!DOCTYPE gowin-fpga-project>
+<Project>
+    <Template>FPGA</Template>
+    <Version>5</Version>
+    <Device name="GW1NR-9C" pn="GW1NR-LV9QN88PC6/I5">gw1nr9c-004</Device>
+    <FileList>
+        <File path="src/loopback.v" type="file.verilog" enable="1"/>
+        <File path="src/printer.v" type="file.verilog" enable="1"/>
+        <File path="src/rx.v" type="file.verilog" enable="1"/>
+        <File path="src/s_error.v" type="file.verilog" enable="1"/>
+        <File path="src/s_read_cmd.v" type="file.verilog" enable="1"/>
+        <File path="src/s_run_cmd.v" type="file.verilog" enable="1"/>
+        <File path="src/s_start.v" type="file.verilog" enable="1"/>
+        <File path="src/strings.v" type="file.verilog" enable="1"/>
+        <File path="src/top.v" type="file.verilog" enable="1"/>
+        <File path="src/tx.v" type="file.verilog" enable="1"/>
+    </FileList>
+</Project>

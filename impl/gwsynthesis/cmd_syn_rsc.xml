@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module name="top" Register="1" Lut="1" T_Register="313(1)" T_Alu="13(0)" T_Lut="449(1)" T_Bsram="1(0)">
+ <SubModule name="_tx" Register="14" Lut="23" T_Register="14(14)" T_Lut="23(23)"/>
+ <SubModule name="_printer" Register="1" Lut="1" T_Register="1(1)" T_Lut="1(1)"/>
+ <SubModule name="_start" Register="2" Lut="2" T_Register="2(2)" T_Lut="2(2)"/>
+ <SubModule name="gw_gao_inst_0" Register="295" Alu="13" Lut="422" Bsram="1" T_Register="295(295)" T_Alu="13(13)" T_Lut="422(422)" T_Bsram="1(1)"/>
+</Module>

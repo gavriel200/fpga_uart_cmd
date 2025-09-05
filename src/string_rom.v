@@ -1,7 +1,7 @@
 module string_rom(
     input [1:0] id,
     output reg [32*8-1:0] string,
-    output length
+    output reg [4:0] length
 );
 
 localparam START = 4'd0;

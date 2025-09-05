@@ -14,31 +14,35 @@
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Dev/FPGA/cmd/src/s_error.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "C:/Dev/FPGA/cmd/src/s_read_cmd.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "C:/Dev/FPGA/cmd/src/s_run_cmd.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "C:/Dev/FPGA/cmd/src/s_start.v",
-   "Type" : "verilog"
-  },
-  {
-   "Path" : "C:/Dev/FPGA/cmd/src/strings.v",
-   "Type" : "verilog"
-  },
-  {
    "Path" : "C:/Dev/FPGA/cmd/src/top.v",
    "Type" : "verilog"
   },
   {
    "Path" : "C:/Dev/FPGA/cmd/src/tx.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "C:/Dev/FPGA/cmd/src/cmd/ping.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "C:/Dev/FPGA/cmd/src/state/error.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "C:/Dev/FPGA/cmd/src/state/read_cmd.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "C:/Dev/FPGA/cmd/src/state/run_cmd.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "C:/Dev/FPGA/cmd/src/state/start.v",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "C:/Dev/FPGA/cmd/src/string_rom.v",
    "Type" : "verilog"
   }
  ],

@@ -1,5 +1,6 @@
 module start(
     input clk,
+    input enable,
 
     input printer_done,
 
@@ -29,8 +30,10 @@ always @(posedge clk) begin
 
     case (state)
     INIT: begin
-        printer_enable_r <= 1;
-        state <= SENDING;
+        if (enable) begin
+            printer_enable_r <= 1;
+            state <= SENDING;
+        end
     end
 
     SENDING: begin
@@ -41,8 +44,9 @@ always @(posedge clk) begin
         end
     end
     
-//    DONE: begin
-//    end
+    DONE: begin
+        state <= INIT;
+    end
     endcase
 
     

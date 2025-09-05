@@ -3,7 +3,7 @@ module printer(
     input [1:0] str_id,
     input enable,
 
-    input tx_state,
+    input [1:0] tx_state,
 
     output [1:0] printer_state,
     output printer_done,
@@ -33,7 +33,7 @@ reg [4:0] pointer;
 
 // string_rom
 wire [32*8-1:0] string;
-wire length;
+wire [4:0] length;
 string_rom _string_rom(
     .id(str_id), 
     .string(string), 
@@ -51,18 +51,18 @@ always @(posedge clk) begin
         end
     end
     SET_STRING: begin
-        pointer <= 32 - length;
+        pointer <= 32 - 1 - length; 
         state <= PRINTING;
     end
     PRINTING: begin
         if (pointer < 32 - 1) begin
-            done <= 1;
-            pointer <= 0;
-            state <= IDLE;
-        end else begin
             data_out_r <= string[pointer*8+:8];
             tx_enable_reg <= 1;
             state <= WAIT_PRINT;
+        end else begin
+            done <= 1;
+            pointer <= 0;
+            state <= IDLE;
         end
     end
     WAIT_PRINT: begin

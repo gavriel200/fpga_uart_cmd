@@ -1,10 +1,10 @@
 # Gowin IDE build directories
-*/impl/*
-*/synthesis/*
-*/simulation/*
-*/rev_*
-*/tmp/*
-*/project/*
+impl/
+synthesis/
+simulation/
+rev_
+tmp/
+project/
 
 # Common build outputs
 *.fs

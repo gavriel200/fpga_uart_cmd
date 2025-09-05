@@ -51,7 +51,8 @@ always @(posedge clk) begin
         end
     end
     SET_STRING: begin
-        pointer <= 32 - length;        
+        pointer <= 32 - length;
+        state <= PRINTING;
     end
     PRINTING: begin
         if (pointer < 32 - 1) begin

@@ -5,12 +5,19 @@ module top(
     output tx
 );
 
-localparam START = 2'd0;
-localparam CMD_READ = 2'd1;
-localparam CMD_RUN = 2'd2;
-localparam ERROR = 2'd3;
 
-reg [1:0] state = START;
+
+localparam WAIT = 2'd0;
+
+// testing
+localparam START = 2'd1;
+ localparam CMD_READ = 2'd2;
+
+// localparam CMD_READ = 2'd1;
+// localparam CMD_RUN = 2'd2;
+// localparam ERROR = 2'd3;
+
+reg [1:0] state = WAIT;
 reg [7:0] cmd_buffer;
 reg [2:0] cmd_buffer_ptr;
 
@@ -56,9 +63,17 @@ start _start(
     .printer_enable(printer_enable)
 );
 
+reg [27:0] timer = 0;
 
 always @ (posedge clk) begin
     case (state)
+    WAIT: begin
+        if (timer < 135000000 - 1) begin
+            timer <= timer + 1;
+        end else begin
+            state <= START;
+        end
+    end
     START: begin
         if (start_done == 1) begin
             state <= CMD_READ;

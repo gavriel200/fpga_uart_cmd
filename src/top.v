@@ -18,13 +18,15 @@ reg [2:0] cmd_buffer_ptr;
 wire tx_enable;
 wire [7:0] data_out;
 wire [1:0] tx_state;
+wire tx_done;
 
 tx _tx(
     .clk(clk), 
     .data_out(data_out), 
     .enable(tx_enable), 
     .tx(tx), 
-    .tx_state(tx_state)
+    .tx_state(tx_state),
+    .tx_done(tx_done)
 );
 
 // printer
@@ -38,6 +40,7 @@ printer _printer(
     .str_id(printer_str_id), 
     .enable(printer_enable), 
     .tx_state(tx_state),
+    .tx_done(tx_done),
     .printer_state(printer_state), 
     .printer_done(printer_done), 
     .data_out(data_out), 
@@ -76,6 +79,7 @@ always @ (posedge clk) begin
         end else begin
             state <= START;
             start_enable <= 1;
+            timer <= 0;
         end
     end
 

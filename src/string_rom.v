@@ -12,11 +12,11 @@ localparam PONG = 4'd3;
 always @(*) begin
     case (id)
     START: begin
-        string = "strting program";
+        string = "starting program";
         length = 15;
     end
     SHELL: begin
-        string = "\n$>";
+        string = {8'h0D, 8'h0A, 8'h24, 8'h3E}; // /n/r$>
         length = 3;
     end
     ERROR: begin

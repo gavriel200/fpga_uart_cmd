@@ -4,6 +4,7 @@ module printer(
     input enable,
 
     input [1:0] tx_state,
+    input tx_done,
 
     output [1:0] printer_state,
     output printer_done,
@@ -13,7 +14,7 @@ module printer(
 
 localparam IDLE = 4'd0;
 localparam SET_STRING = 4'd1;
-localparam PRINTING = 4'd2;
+localparam SEND_TO_PRINT = 4'd2;
 localparam WAIT_PRINT = 4'd3;
 
 reg [1:0] state = IDLE;
@@ -51,26 +52,26 @@ always @(posedge clk) begin
         end
     end
     SET_STRING: begin
-        pointer <= 32 - 1 - length; 
-        state <= PRINTING;
+        pointer <= length - 1;
+        state <= SEND_TO_PRINT;
     end
-    PRINTING: begin
-        if (pointer < 32 - 1) begin
-            data_out_r <= string[pointer*8+:8];
-            tx_enable_reg <= 1;
-            state <= WAIT_PRINT;
-        end else begin
-            done <= 1;
-            pointer <= 0;
-            state <= IDLE;
-        end
+    SEND_TO_PRINT: begin
+        data_out_r <= string[pointer*8 +: 8];
+        tx_enable_reg <= 1;
+        state <= WAIT_PRINT;
     end
     WAIT_PRINT: begin
         tx_enable_reg <= 0;
 
-        if (tx_state == 2'd0) begin // TX idle state
-            pointer <= pointer + 1;
-            state <= PRINTING;
+        if (tx_done) begin
+            if (pointer == 0) begin
+                done <= 1;
+                pointer <= 0;
+                state <= IDLE;
+            end else begin
+                pointer <= pointer - 1;
+                state <= SEND_TO_PRINT;
+            end
         end
     end
     endcase

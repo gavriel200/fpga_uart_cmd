@@ -13,7 +13,7 @@ always @(*) begin
     case (id)
     START: begin
         string = "starting program";
-        length = 15;
+        length = 16;
     end
     SHELL: begin
         string = {8'h0D, 8'h0A, 8'h24, 8'h3E}; // /n/r$>

@@ -51,9 +51,10 @@ module top (
   // rx
   wire [7:0] data_in;
   wire rx_done;
+  wire [2:0] rx_state;
 
   rx(
-      .clk(clk), .reset(reset), .rx(rx), .data_in(data_in), .rx_done(rx_done)
+      .clk(clk), .reset(reset), .rx(rx), .data_in(data_in), .rx_done(rx_done), .rx_state(rx_state)
   );
 
   // printer
@@ -127,6 +128,7 @@ module top (
       .reset(reset),
       .enable(loopback_enable),
       .rx_done(rx_done),
+      .rx_state(rx_state),
       .data_in(data_in),
       .tx_enable(loopback_tx_enable),
       .data_out(loopback_data_out)

@@ -77,6 +77,7 @@ module printer (
               done <= 1;
               pointer <= 0;
               state <= IDLE;
+              data_out_r <= 0;
             end else begin
               pointer <= pointer - 1;
               state   <= SEND_TO_PRINT;

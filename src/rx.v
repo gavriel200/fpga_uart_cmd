@@ -10,7 +10,8 @@ module rx (
     input rx,
 
     output [7:0] data_in,
-    output rx_done
+    output rx_done,
+    output [2:0] rx_state
 );
 
   localparam CLKS_PER_BIT = 234;
@@ -25,8 +26,10 @@ module rx (
   reg [7:0] clk_count = 0;
   reg [7:0] data;
 
-  reg [1:0] state = STATE_IDLE;
-  reg [1:0] prev_state = STATE_IDLE;
+  reg [2:0] state = STATE_IDLE;
+  reg [2:0] prev_state = STATE_IDLE;
+
+  assign rx_state = state;
 
   reg [2:0] bit_index = 0;
 

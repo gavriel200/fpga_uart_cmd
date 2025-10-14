@@ -7,6 +7,7 @@ module loopback (
 
     // rx
     input rx_done,
+    input [2:0] rx_state,
     input [7:0] data_in,
 
     // tx
@@ -31,10 +32,8 @@ module loopback (
       tx_enable_reg <= 0;
     end else begin
 
-      if (enable) begin
-        if (rx_done) begin
-          tx_enable_reg <= 1;
-        end
+      if (enable & rx_done) begin
+        tx_enable_reg <= 1;
       end else begin
         tx_enable_reg <= 0;
       end

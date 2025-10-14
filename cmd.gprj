@@ -8,6 +8,7 @@
         <File path="src/cmd/ping.v" type="file.verilog" enable="1"/>
         <File path="src/loopback.v" type="file.verilog" enable="1"/>
         <File path="src/printer.v" type="file.verilog" enable="1"/>
+        <File path="src/reset.v" type="file.verilog" enable="1"/>
         <File path="src/rx.v" type="file.verilog" enable="1"/>
         <File path="src/state/error.v" type="file.verilog" enable="1"/>
         <File path="src/state/read_cmd.v" type="file.verilog" enable="1"/>

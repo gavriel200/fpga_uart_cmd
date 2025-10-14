@@ -1,4 +1,4 @@
-module start(
+module start (
     input clk,
     input enable,
 
@@ -11,46 +11,46 @@ module start(
     output printer_enable
 );
 
-localparam INIT = 4'd0;
-localparam SENDING = 4'd1;
-localparam DONE = 4'd2;
+  localparam INIT = 4'd0;
+  localparam SENDING = 4'd1;
+  localparam DONE = 4'd2;
 
-reg [1:0] state = INIT;
-assign start_state = state;
+  reg [1:0] state = INIT;
+  assign start_state = state;
 
-assign start_done = state == DONE;
+  assign start_done  = state == DONE;
 
-reg [1:0] start_str_id = 4'd0;
-assign printer_str_id = start_str_id;
+  reg [1:0] start_str_id = 4'd0;
+  assign printer_str_id = start_str_id;
 
-reg printer_enable_r = 0;
-assign printer_enable = printer_enable_r;
+  reg printer_enable_r = 0;
+  assign printer_enable = printer_enable_r;
 
-always @(posedge clk) begin
+  always @(posedge clk) begin
 
     case (state)
-    INIT: begin
+      INIT: begin
         if (enable) begin
-            printer_enable_r <= 1;
-            state <= SENDING;
+          printer_enable_r <= 1;
+          state <= SENDING;
         end
-    end
+      end
 
-    SENDING: begin
+      SENDING: begin
         printer_enable_r <= 0;
 
         if (printer_done == 1) begin
-            state <= DONE;
+          state <= DONE;
         end
-    end
-    
-    DONE: begin
+      end
+
+      DONE: begin
         state <= INIT;
-    end
+      end
     endcase
 
-    
-end
 
-    
+  end
+
+
 endmodule

@@ -4,6 +4,6 @@
     - rx -> tx
 - add error for bad cmd
 - add ping cmd should print pong
-- string find better way to add newline and \r other then hex
+- string_val find better way to add newline and \r other then hex
 - remove the enable from the start state just make it stop at done
 - check if stated need or can just use done with prev_state

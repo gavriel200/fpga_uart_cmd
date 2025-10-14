@@ -1,4 +1,4 @@
-module start (
+module pre_read_cmd (
     input clk,
     input reset,
 
@@ -6,8 +6,7 @@ module start (
 
     input printer_done,
 
-    output [1:0] start_state,
-    output start_done,
+    output pre_read_cmd_done,
 
     output [1:0] printer_str_id,
     output printer_enable
@@ -18,12 +17,11 @@ module start (
   localparam DONE = 4'd2;
 
   reg [1:0] state = INIT;
-  assign start_state = state;
 
-  assign start_done  = state == DONE;
+  assign pre_read_cmd_done = state == DONE;
 
-  reg [1:0] start_str_id;
-  assign printer_str_id = start_str_id;
+  reg [1:0] shell_str_id;
+  assign printer_str_id = shell_str_id;
 
   reg printer_enable_r = 0;
   assign printer_enable = printer_enable_r;
@@ -37,7 +35,7 @@ module start (
           if (enable) begin
             state <= SENDING;
             printer_enable_r <= 1;
-            start_str_id <= 4'd0;
+            shell_str_id <= 4'd1;
           end
         end
 
@@ -51,7 +49,7 @@ module start (
 
         DONE: begin
           state <= INIT;
-          start_str_id <= 4'd0;
+          shell_str_id <= 4'd0;
         end
       endcase
     end

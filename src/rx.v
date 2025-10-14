@@ -10,7 +10,7 @@ module rx (
     input rx,
 
     output [7:0] data_in,
-    output [2:0] state_out
+    output rx_done
 );
 
   localparam CLKS_PER_BIT = 234;
@@ -24,11 +24,14 @@ module rx (
 
   reg [7:0] clk_count = 0;
   reg [7:0] data;
-  reg [2:0] state = STATE_IDLE;
+
+  reg [1:0] state = STATE_IDLE;
+  reg [1:0] prev_state = STATE_IDLE;
+
   reg [2:0] bit_index = 0;
 
-  assign data_in   = data;
-  assign state_out = state;
+  assign data_in = data;
+  assign rx_done = prev_state == STATE_STOP && state == STATE_IDLE;
 
   always @(posedge clk) begin
     if (reset) begin
@@ -37,6 +40,8 @@ module rx (
       data <= 0;
       bit_index <= 0;
     end else begin
+      prev_state <= state;
+
       case (state)
         STATE_IDLE: begin
           clk_count <= 0;

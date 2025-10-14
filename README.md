@@ -1,4 +1,3 @@
-- add reset using the btn
 - add loopback logic while reading cmd
     - watch for a backspace need to make sure where the pointer of the cmd is
     - rx -> tx

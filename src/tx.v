@@ -10,7 +10,6 @@ module tx (
     input enable,
 
     output tx,
-    output [1:0] tx_state,
     output tx_done
 );
 
@@ -31,7 +30,6 @@ module tx (
   reg tx_reg = 1;
 
   assign tx = tx_reg;
-  assign tx_state = state;
   assign tx_done = prev_state == STATE_STOP && state == STATE_IDLE;
 
   always @(posedge clk) begin

@@ -12,12 +12,12 @@ module string_rom (
   always @(*) begin
     case (id)
       START: begin
-        string_val = "starting program";
-        length = 16;
+        string_val = {8'h0D, 8'h0A, 8'h0D, 8'h0D, 8'h0A, 8'h0D, "starting program"};
+        length = 24;
       end
       SHELL: begin
-        string_val = {8'h0D, 8'h0A, 8'h24, 8'h3E};  // /n/r$>
-        length = 3;
+        string_val = {8'h0D, 8'h0A, 8'h0D, 8'h24, 8'h3E};  // /n/r/n$>
+        length = 4;
       end
       ERROR: begin
         string_val = "error: invalid command";

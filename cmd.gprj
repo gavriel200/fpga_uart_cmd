@@ -11,6 +11,7 @@
         <File path="src/reset_button.v" type="file.verilog" enable="1"/>
         <File path="src/rx.v" type="file.verilog" enable="1"/>
         <File path="src/state/error.v" type="file.verilog" enable="1"/>
+        <File path="src/state/pre_read_cmd.v" type="file.verilog" enable="1"/>
         <File path="src/state/read_cmd.v" type="file.verilog" enable="1"/>
         <File path="src/state/run_cmd.v" type="file.verilog" enable="1"/>
         <File path="src/state/start.v" type="file.verilog" enable="1"/>

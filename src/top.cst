@@ -13,3 +13,7 @@ IO_LOC "rx" 18;
 IO_PORT "rx" IO_TYPE=LVCMOS33;
 IO_LOC "clk" 52;
 IO_PORT "clk" PULL_MODE=UP;
+IO_LOC "rst_btn" 4;
+IO_PORT "rst_btn" PULL_MODE=UP;
+IO_LOC "led" 15;
+IO_PORT "led" IO_TYPE=LVCMOS18;

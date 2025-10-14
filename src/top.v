@@ -1,6 +1,9 @@
 module top (
     input clk,
 
+    input  rst_btn,
+    output led,
+
     input  rx,
     output tx
 );
@@ -13,6 +16,16 @@ module top (
   reg [1:0] state = START;
   reg [7:0] cmd_buffer;
   reg [2:0] cmd_buffer_ptr;
+
+  // reset button
+  wire reset;
+
+  reset_button(
+      .clk(clk), .rst_btn(rst_btn), .reset(reset)
+  );
+
+  // reset debug
+  assign led = !reset;
 
   // tx
   wire tx_enable;

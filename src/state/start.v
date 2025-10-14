@@ -1,5 +1,7 @@
 module start (
     input clk,
+    input reset,
+
     input enable,
 
     input printer_done,
@@ -27,29 +29,30 @@ module start (
   assign printer_enable = printer_enable_r;
 
   always @(posedge clk) begin
-
-    case (state)
-      INIT: begin
-        if (enable) begin
-          printer_enable_r <= 1;
-          state <= SENDING;
+    if (reset) begin
+      state <= INIT;
+    end else begin
+      case (state)
+        INIT: begin
+          if (enable) begin
+            printer_enable_r <= 1;
+            state <= SENDING;
+          end
         end
-      end
 
-      SENDING: begin
-        printer_enable_r <= 0;
+        SENDING: begin
+          printer_enable_r <= 0;
 
-        if (printer_done == 1) begin
-          state <= DONE;
+          if (printer_done == 1) begin
+            state <= DONE;
+          end
         end
-      end
 
-      DONE: begin
-        state <= INIT;
-      end
-    endcase
-
-
+        DONE: begin
+          state <= INIT;
+        end
+      endcase
+    end
   end
 
 

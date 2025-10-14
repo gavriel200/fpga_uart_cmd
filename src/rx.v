@@ -5,6 +5,8 @@
 
 module rx (
     input clk,
+    input reset,
+
     input rx,
 
     output [7:0] data_in,
@@ -29,60 +31,67 @@ module rx (
   assign state_out = state;
 
   always @(posedge clk) begin
-    case (state)
-      STATE_IDLE: begin
-        clk_count <= 0;
-        bit_index <= 0;
-
-        if (!rx) begin
-          state <= STATE_WAIT_START;
-        end
-      end
-
-      STATE_WAIT_START: begin
-        if (clk_count < CLKS_PER_BIT_HALF - 1) begin
-          clk_count <= clk_count + 1;
-        end else begin
-          state <= STATE_START;
+    if (reset) begin
+      state <= STATE_IDLE;
+      clk_count <= 0;
+      data <= 0;
+      bit_index <= 0;
+    end else begin
+      case (state)
+        STATE_IDLE: begin
           clk_count <= 0;
-        end
-      end
+          bit_index <= 0;
 
-      STATE_START: begin
-        if (clk_count < CLKS_PER_BIT - 1) begin
-          clk_count <= clk_count + 1;
-        end else begin
-          state <= STATE_DATA;
-          clk_count <= 0;
-          data <= {rx, data[7:1]};
-        end
-      end
-
-      STATE_DATA: begin
-        if (clk_count < CLKS_PER_BIT - 1) begin
-          clk_count <= clk_count + 1;
-        end else begin
-          clk_count <= 0;
-
-          if (bit_index < 7) begin
-            bit_index <= bit_index + 1;
-            data <= {rx, data[7:1]};
-          end else begin
-            state <= STATE_STOP;
-            bit_index <= 0;
+          if (!rx) begin
+            state <= STATE_WAIT_START;
           end
         end
-      end
 
-      STATE_STOP: begin
-        if (clk_count < CLKS_PER_BIT - 1) begin
-          clk_count <= clk_count + 1;
-        end else begin
-          state <= STATE_IDLE;
-          clk_count <= 0;
+        STATE_WAIT_START: begin
+          if (clk_count < CLKS_PER_BIT_HALF - 1) begin
+            clk_count <= clk_count + 1;
+          end else begin
+            state <= STATE_START;
+            clk_count <= 0;
+          end
         end
-      end
-    endcase
+
+        STATE_START: begin
+          if (clk_count < CLKS_PER_BIT - 1) begin
+            clk_count <= clk_count + 1;
+          end else begin
+            state <= STATE_DATA;
+            clk_count <= 0;
+            data <= {rx, data[7:1]};
+          end
+        end
+
+        STATE_DATA: begin
+          if (clk_count < CLKS_PER_BIT - 1) begin
+            clk_count <= clk_count + 1;
+          end else begin
+            clk_count <= 0;
+
+            if (bit_index < 7) begin
+              bit_index <= bit_index + 1;
+              data <= {rx, data[7:1]};
+            end else begin
+              state <= STATE_STOP;
+              bit_index <= 0;
+            end
+          end
+        end
+
+        STATE_STOP: begin
+          if (clk_count < CLKS_PER_BIT - 1) begin
+            clk_count <= clk_count + 1;
+          end else begin
+            state <= STATE_IDLE;
+            clk_count <= 0;
+          end
+        end
+      endcase
+    end
   end
 
 endmodule

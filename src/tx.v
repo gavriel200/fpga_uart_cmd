@@ -4,6 +4,8 @@
 
 module tx (
     input clk,
+    input reset,
+
     input [7:0] data_out,
     input enable,
 
@@ -33,59 +35,68 @@ module tx (
   assign tx_done = prev_state == STATE_STOP && state == STATE_IDLE;
 
   always @(posedge clk) begin
-    prev_state <= state;
+    if (reset) begin
+      state <= STATE_IDLE;
+      prev_state <= STATE_IDLE;
+      clk_count <= 0;
+      data_reg <= 0;
+      bit_index <= 0;
+      tx_reg <= 1;
+    end else begin
+      prev_state <= state;
 
-    case (state)
-      STATE_IDLE: begin
-        tx_reg    <= 1;  // Keep line high when idle
-        clk_count <= 0;
-        bit_index <= 0;
-
-        if (enable) begin
-          state <= STATE_START;
-          data_reg <= data_out;
-        end
-      end
-
-      STATE_START: begin
-        tx_reg <= 0;  // Send start bit (low)
-
-        if (clk_count < CLKS_PER_BIT - 1) begin
-          clk_count <= clk_count + 1;
-        end else begin
-          state <= STATE_DATA;
+      case (state)
+        STATE_IDLE: begin
+          tx_reg    <= 1;  // Keep line high when idle
           clk_count <= 0;
-        end
-      end
+          bit_index <= 0;
 
-      STATE_DATA: begin
-        tx_reg <= data_reg[bit_index];  // Send current data bit
-
-        if (clk_count < CLKS_PER_BIT - 1) begin
-          clk_count <= clk_count + 1;
-        end else begin
-          clk_count <= 0;
-
-          if (bit_index < 7) begin
-            bit_index <= bit_index + 1;
-          end else begin
-            state <= STATE_STOP;
-            bit_index <= 0;
+          if (enable) begin
+            state <= STATE_START;
+            data_reg <= data_out;
           end
         end
-      end
 
-      STATE_STOP: begin
-        tx_reg <= 1;  // Send stop bit (high)
+        STATE_START: begin
+          tx_reg <= 0;  // Send start bit (low)
 
-        if (clk_count < CLKS_PER_BIT - 1) begin
-          clk_count <= clk_count + 1;
-        end else begin
-          state <= STATE_IDLE;
-          clk_count <= 0;
+          if (clk_count < CLKS_PER_BIT - 1) begin
+            clk_count <= clk_count + 1;
+          end else begin
+            state <= STATE_DATA;
+            clk_count <= 0;
+          end
         end
-      end
-    endcase
+
+        STATE_DATA: begin
+          tx_reg <= data_reg[bit_index];  // Send current data bit
+
+          if (clk_count < CLKS_PER_BIT - 1) begin
+            clk_count <= clk_count + 1;
+          end else begin
+            clk_count <= 0;
+
+            if (bit_index < 7) begin
+              bit_index <= bit_index + 1;
+            end else begin
+              state <= STATE_STOP;
+              bit_index <= 0;
+            end
+          end
+        end
+
+        STATE_STOP: begin
+          tx_reg <= 1;  // Send stop bit (high)
+
+          if (clk_count < CLKS_PER_BIT - 1) begin
+            clk_count <= clk_count + 1;
+          end else begin
+            state <= STATE_IDLE;
+            clk_count <= 0;
+          end
+        end
+      endcase
+    end
   end
 
 endmodule

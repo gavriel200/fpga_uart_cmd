@@ -1,5 +1,7 @@
 module printer (
     input clk,
+    input reset,
+
     input [1:0] str_id,
     input enable,
 
@@ -42,39 +44,47 @@ module printer (
   );
 
   always @(posedge clk) begin
-    case (state)
-      IDLE: begin
-        done <= 0;
-        pointer <= 0;
+    if (reset) begin
+      state <= IDLE;
+      done <= 0;
+      tx_enable_reg <= 0;
+      data_out_r <= 0;
+      pointer <= 0;
+    end else begin
+      case (state)
+        IDLE: begin
+          done <= 0;
+          pointer <= 0;
 
-        if (enable) begin
-          state <= SET_STRING;
-        end
-      end
-      SET_STRING: begin
-        pointer <= length - 1;
-        state   <= SEND_TO_PRINT;
-      end
-      SEND_TO_PRINT: begin
-        data_out_r <= string_val[pointer*8+:8];
-        tx_enable_reg <= 1;
-        state <= WAIT_PRINT;
-      end
-      WAIT_PRINT: begin
-        tx_enable_reg <= 0;
-
-        if (tx_done) begin
-          if (pointer == 0) begin
-            done <= 1;
-            pointer <= 0;
-            state <= IDLE;
-          end else begin
-            pointer <= pointer - 1;
-            state   <= SEND_TO_PRINT;
+          if (enable) begin
+            state <= SET_STRING;
           end
         end
-      end
-    endcase
+        SET_STRING: begin
+          pointer <= length - 1;
+          state   <= SEND_TO_PRINT;
+        end
+        SEND_TO_PRINT: begin
+          data_out_r <= string_val[pointer*8+:8];
+          tx_enable_reg <= 1;
+          state <= WAIT_PRINT;
+        end
+        WAIT_PRINT: begin
+          tx_enable_reg <= 0;
+
+          if (tx_done) begin
+            if (pointer == 0) begin
+              done <= 1;
+              pointer <= 0;
+              state <= IDLE;
+            end else begin
+              pointer <= pointer - 1;
+              state   <= SEND_TO_PRINT;
+            end
+          end
+        end
+      endcase
+    end
   end
 
 endmodule

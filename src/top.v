@@ -9,7 +9,8 @@ module top (
 );
 
   localparam START = 2'd0;
-  localparam WAIT = 2'd1;
+  // localparam WAIT = 2'd1;
+  localparam CMD_READ = 2'd1;
   localparam CMD_RUN = 2'd2;
   localparam ERROR = 2'd3;
 
@@ -35,6 +36,7 @@ module top (
 
   tx _tx (
       .clk(clk),
+      .reset(reset),
       .data_out(data_out),
       .enable(tx_enable),
       .tx(tx),
@@ -50,6 +52,7 @@ module top (
 
   printer _printer (
       .clk(clk),
+      .reset(reset),
       .str_id(printer_str_id),
       .enable(printer_enable),
       .tx_state(tx_state),
@@ -66,6 +69,7 @@ module top (
   wire start_done;
   start _start (
       .clk(clk),
+      .reset(reset),
       .enable(start_enable),
       .printer_done(printer_done),
       .start_state(start_state),
@@ -74,41 +78,46 @@ module top (
       .printer_enable(printer_enable)
   );
 
-  reg [27:0] timer = 0;
+  // reg [27:0] timer = 0;
 
   always @(posedge clk) begin
-    case (state)
-      START: begin
-        if (start_done == 1) begin
-          state <= WAIT;
-          start_enable <= 0;
+    if (reset) begin
+      state <= START;
+      start_enable <= 1;
+    end else begin
+      case (state)
+        START: begin
+          if (start_done == 1) begin
+            state <= CMD_READ;
+            start_enable <= 0;
+          end
         end
-      end
 
 
-      WAIT: begin
-        if (timer < 135000000 - 1) begin
-          timer <= timer + 1;
-        end else begin
-          state <= START;
-          start_enable <= 1;
-          timer <= 0;
+        // WAIT: begin
+        //   if (timer < 135000000 - 1) begin
+        //     timer <= timer + 1;
+        //   end else begin
+        //     state <= START;
+        //     start_enable <= 1;
+        //     timer <= 0;
+        //   end
+        // end
+
+        CMD_READ: begin
+
         end
-      end
 
-      //    CMD_READ: begin
+        CMD_RUN: begin
 
-      //    end
+        end
 
-      //    CMD_RUN: begin
+        ERROR: begin
 
-      //    end
+        end
 
-      //    ERROR: begin
-      //        
-      //    end
-
-    endcase
+      endcase
+    end
 
   end
 

@@ -4,14 +4,14 @@ module reset_button (
     output reset
 );
 
-  reg [27:0] timer = 0;
+  reg [25:0] timer = 0;
   reg reset_reg = 0;
 
   assign reset = reset_reg;
 
   always @(posedge clk) begin
     if (!rst_btn) begin
-      if (timer < 135000000 - 1) begin
+      if (timer < 54000000 - 1) begin
         timer <= timer + 1;
       end else begin
         reset_reg <= 1;

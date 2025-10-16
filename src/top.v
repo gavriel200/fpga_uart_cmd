@@ -31,15 +31,17 @@ module top (
   // tx
   wire printer_tx_enable;
   wire loopback_tx_enable;
+  wire read_cmd_tx_enable;  //
   wire tx_enable;
 
-  assign tx_enable = printer_tx_enable | loopback_tx_enable;
+  assign tx_enable = printer_tx_enable | loopback_tx_enable | read_cmd_tx_enable;
 
   wire [7:0] printer_data_out;
   wire [7:0] loopback_data_out;
+  wire [7:0] read_cmd_data_out;  //
   wire [7:0] data_out;
 
-  assign data_out = printer_data_out | loopback_data_out;
+  assign data_out = printer_data_out | loopback_data_out | read_cmd_data_out;
 
   wire [1:0] tx_state;
   wire tx_done;
@@ -60,15 +62,17 @@ module top (
   // printer
   wire [1:0] start_printer_str_id;
   wire [1:0] pre_read_cmd_printer_str_id;
+  wire [1:0] read_cmd_printer_str_id;  //
   wire [1:0] printer_str_id;
 
-  assign printer_str_id = start_printer_str_id | pre_read_cmd_printer_str_id;
+  assign printer_str_id = start_printer_str_id | pre_read_cmd_printer_str_id|read_cmd_printer_str_id;
 
-  wire [1:0] start_printer_enable;
-  wire [1:0] pre_read_cmd_printer_enable;
+  wire start_printer_enable;
+  wire pre_read_cmd_printer_enable;
+  wire read_cmd_printer_enable;  //
   wire printer_enable;
 
-  assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable;
+  assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable | read_cmd_printer_enable;
 
   wire [1:0] printer_state;
   wire printer_done;
@@ -119,32 +123,35 @@ module top (
   );
 
   // read_cmd
-  reg read_cmd_enable = 0;
-
-  // loop that will need to move to read_cmd state code
-  reg loopback_enable = 0;
-  loopback(
+  reg  read_cmd_enable = 0;
+  wire read_cmd_done;
+  read_cmd(
       .clk(clk),
       .reset(reset),
-      .enable(loopback_enable),
+      // private
+      .enable(read_cmd_enable),
+      .read_cmd_done(read_cmd_done),
+      // rx
       .rx_done(rx_done),
       .rx_state(rx_state),
       .data_in(data_in),
-      .tx_enable(loopback_tx_enable),
-      .data_out(loopback_data_out)
+      // tx
+      .tx_enable(read_cmd_tx_enable),
+      .data_out(read_cmd_data_out)
   );
+
 
   always @(posedge clk) begin
     if (reset) begin
       state <= START;
       start_enable <= 1;
-      loopback_enable <= 0;
+      read_cmd_enable <= 0;
     end else begin
       case (state)
         START: begin
           start_enable <= 0;
 
-          if (start_done == 1) begin
+          if (start_done) begin
             state <= CMD_PRE_READ;
             pre_read_cmd_enable <= 1;
           end
@@ -153,14 +160,19 @@ module top (
         CMD_PRE_READ: begin
           pre_read_cmd_enable <= 0;
 
-          if (pre_read_cmd_done == 1) begin
+          if (pre_read_cmd_done) begin
             state <= CMD_READ;
             read_cmd_enable <= 1;
           end
         end
 
         CMD_READ: begin
-          loopback_enable <= 1;
+          read_cmd_enable <= 0;
+
+          if (read_cmd_done) begin
+            state <= CMD_PRE_READ;
+            pre_read_cmd_enable <= 1;
+          end
           // loopback enable
           // cmd_handler takes in all the data from loopback
           // once enter is pressed state changes to run if valid command

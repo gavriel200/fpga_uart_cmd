@@ -1,64 +1,61 @@
-module pre_read_cmd (
+module error (
     input clk,
     input reset,
 
-    input enable,
+    // private
+    input  enable,
+    output error_done,
 
+    // printer
     input printer_done,
-
-    output pre_read_cmd_done,
-
     output [1:0] printer_str_id,
-    output printer_enable,
-
-    output [1:0] pre_read_cmd_state
+    output printer_enable
 );
 
   localparam IDLE = 4'd0;
-  localparam SENDING = 4'd1;
+  localparam RUN = 4'd1;
   localparam DONE = 4'd2;
 
   reg [1:0] state = IDLE;
 
-  reg pre_read_cmd_done_reg = 0;
-  assign pre_read_cmd_done = pre_read_cmd_done_reg;
-
-  reg [1:0] shell_str_id = 0;
-  assign printer_str_id = shell_str_id;
+  reg error_done_reg = 0;
+  assign error_done = error_done_reg;
 
   reg printer_enable_r = 0;
   assign printer_enable = printer_enable_r;
 
+  reg [1:0] error_str_id = 0;
+  assign printer_str_id = error_str_id;
+
   always @(posedge clk) begin
     if (reset) begin
       state <= IDLE;
-      pre_read_cmd_done_reg <= 0;
-      shell_str_id <= 0;
+      error_done_reg <= 0;
       printer_enable_r <= 0;
+      error_str_id <= 0;
     end else begin
       case (state)
         IDLE: begin
-          pre_read_cmd_done_reg <= 0;
+          error_done_reg <= 0;
 
           if (enable) begin
-            state <= SENDING;
+            state <= RUN;
             printer_enable_r <= 1;
-            shell_str_id <= 1;
+            error_str_id <= 4'd2;
           end
         end
 
-        SENDING: begin
+
+        RUN: begin
           printer_enable_r <= 0;
 
           if (printer_done) begin
             state <= IDLE;
-            pre_read_cmd_done_reg <= 1;
-            shell_str_id <= 0;
+            error_done_reg <= 1;
+            error_str_id <= 4'd0;
           end
         end
       endcase
     end
   end
-
-
 endmodule

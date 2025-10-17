@@ -9,12 +9,11 @@ module top (
 );
 
   localparam START = 3'd0;
-  localparam CMD_PRE_READ = 3'd2;
-  localparam CMD_READ = 3'd3;
-  localparam CMD_RUN = 3'd4;
-  localparam ERROR = 3'd5;
+  localparam CMD_PRE_READ = 3'd1;
+  localparam CMD_READ = 3'd2;
+  localparam CMD_RUN = 3'd3;
 
-  reg [2:0] state = START;
+  reg [1:0] state = START;
   reg [7:0] cmd_buffer;
   reg [2:0] cmd_buffer_ptr;
 
@@ -62,17 +61,19 @@ module top (
   // printer
   wire [1:0] start_printer_str_id;
   wire [1:0] pre_read_cmd_printer_str_id;
-  wire [1:0] read_cmd_printer_str_id;  //
+  wire [1:0] ping_printer_str_id;
+  wire [1:0] error_printer_str_id;
   wire [1:0] printer_str_id;
 
-  assign printer_str_id = start_printer_str_id | pre_read_cmd_printer_str_id|read_cmd_printer_str_id;
+  assign printer_str_id = start_printer_str_id | pre_read_cmd_printer_str_id | ping_printer_str_id| error_printer_str_id;
 
   wire start_printer_enable;
   wire pre_read_cmd_printer_enable;
-  wire read_cmd_printer_enable;  //
+  wire ping_printer_enable;
+  wire error_printer_enable;
   wire printer_enable;
 
-  assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable | read_cmd_printer_enable;
+  assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable | ping_printer_enable |error_printer_enable ;
 
   wire [1:0] printer_state;
   wire printer_done;
@@ -88,6 +89,37 @@ module top (
       .printer_done(printer_done),
       .data_out(printer_data_out),
       .tx_enable(printer_tx_enable)
+  );
+
+
+  // ========================================
+  // ================= cmd ==================
+  // ========================================
+
+  // ping
+  wire ping_enable;
+  wire ping_done;
+  ping(
+      .clk(clk),
+      .reset(reset),
+      .enable(ping_enable),
+      .ping_done(ping_done),
+      .printer_done(printer_done),
+      .printer_str_id(ping_printer_str_id),
+      .printer_enable(ping_printer_enable)
+  );
+
+  // error
+  wire error_enable;
+  wire error_done;
+  error(
+      .clk(clk),
+      .reset(reset),
+      .enable(error_enable),
+      .error_done(error_done),
+      .printer_done(printer_done),
+      .printer_str_id(error_printer_str_id),
+      .printer_enable(error_printer_enable)
   );
 
   // ========================================
@@ -110,8 +142,9 @@ module top (
   );
 
   // pre_read_cmd
-  reg  pre_read_cmd_enable = 0;
+  reg pre_read_cmd_enable = 0;
   wire pre_read_cmd_done;
+  wire [1:0] pre_read_cmd_state;
   pre_read_cmd(
       .clk(clk),
       .reset(reset),
@@ -119,18 +152,21 @@ module top (
       .printer_done(printer_done),
       .pre_read_cmd_done(pre_read_cmd_done),
       .printer_str_id(pre_read_cmd_printer_str_id),
-      .printer_enable(pre_read_cmd_printer_enable)
+      .printer_enable(pre_read_cmd_printer_enable),
+      .pre_read_cmd_state(pre_read_cmd_state)
   );
 
   // read_cmd
-  reg  read_cmd_enable = 0;
+  reg read_cmd_enable = 0;
   wire read_cmd_done;
+  wire [32*8-1:0] cmd;
   read_cmd(
       .clk(clk),
       .reset(reset),
       // private
       .enable(read_cmd_enable),
       .read_cmd_done(read_cmd_done),
+      .cmd(cmd),
       // rx
       .rx_done(rx_done),
       .rx_state(rx_state),
@@ -139,6 +175,32 @@ module top (
       .tx_enable(read_cmd_tx_enable),
       .data_out(read_cmd_data_out)
   );
+
+  // run_cmd
+  reg run_cmd_enable = 0;
+  wire run_cmd_done;
+  wire run_cmd_state;
+  wire [32*8-1:0] test_test;
+
+  run_cmd(
+      .clk(clk),
+      .reset(reset),
+      // private
+      .enable(run_cmd_enable),
+      .run_cmd_done(run_cmd_done),
+      // read_cmd
+      .cmd(cmd),
+      // ping
+      .ping_enable(ping_enable),
+      .ping_done(ping_done),
+      // error
+      .error_enable(error_enable),
+      .error_done(error_done),
+      // test
+      .run_cmd_state(run_cmd_state),
+      .test_test(test_test)
+  );
+
 
 
   always @(posedge clk) begin
@@ -170,26 +232,19 @@ module top (
           read_cmd_enable <= 0;
 
           if (read_cmd_done) begin
-            state <= CMD_PRE_READ;
-            pre_read_cmd_enable <= 1;
+            state <= CMD_RUN;
+            run_cmd_enable <= 1;
           end
-          // loopback enable
-          // cmd_handler takes in all the data from loopback
-          // once enter is pressed state changes to run if valid command
-          // if invalid error
-          // if empty just go back to CMP_PRE_READ
         end
 
         CMD_RUN: begin
-          // cmd_handler takes the command and checkes what needs to be run
-          // it prints or does what is needed
-        end
+          run_cmd_enable <= 0;
 
-        ERROR: begin
-          // simple print error + help
-          // return to cmd read
+          if (run_cmd_done) begin
+            state <= CMD_PRE_READ;
+            pre_read_cmd_enable <= 1;
+          end
         end
-
       endcase
     end
 

@@ -20,12 +20,12 @@ module string_rom (
         length = 4;
       end
       ERROR: begin
-        string_val = "error: invalid command";
-        length = 22;
+        string_val = {8'h0D, 8'h0A, 8'h0D, "error: invalid command"};
+        length = 25;
       end
       PONG: begin
-        string_val = "PONG";
-        length = 4;
+        string_val = {8'h0D, 8'h0A, 8'h0D, "PONG"};
+        length = 7;
       end
     endcase
   end

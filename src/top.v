@@ -59,14 +59,6 @@ module top (
   );
 
   // printer
-  wire [1:0] start_printer_str_id;
-  wire [1:0] pre_read_cmd_printer_str_id;
-  wire [1:0] ping_printer_str_id;
-  wire [1:0] error_printer_str_id;
-  wire [1:0] printer_str_id;
-
-  assign printer_str_id = start_printer_str_id | pre_read_cmd_printer_str_id | ping_printer_str_id| error_printer_str_id;
-
   wire start_printer_enable;
   wire pre_read_cmd_printer_enable;
   wire ping_printer_enable;
@@ -74,6 +66,17 @@ module top (
   wire printer_enable;
 
   assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable | ping_printer_enable |error_printer_enable ;
+
+  wire [1:0] start_printer_str_id;
+  wire [1:0] pre_read_cmd_printer_str_id;
+  wire [1:0] ping_printer_str_id;
+  wire [1:0] error_printer_str_id;
+  wire [1:0] printer_str_id;
+  assign printer_str_id = start_printer_enable ? start_printer_str_id :
+                       pre_read_cmd_printer_enable ? pre_read_cmd_printer_str_id :
+                       ping_printer_enable ? ping_printer_str_id :
+                       error_printer_enable ? error_printer_str_id :
+                       2'b00;
 
   wire [1:0] printer_state;
   wire printer_done;

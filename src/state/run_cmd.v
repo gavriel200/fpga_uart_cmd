@@ -56,6 +56,8 @@ module run_cmd (
     end else begin
       case (state)
         IDLE: begin
+          run_cmd_done_reg <= 0;
+
           if (enable) begin
             state <= CMD;
           end

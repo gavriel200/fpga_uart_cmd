@@ -33,6 +33,7 @@ module printer (
 
 
   reg [4:0] pointer;
+  reg [32*8-1:0] string_reg;
 
   // string_rom
   wire [32*8-1:0] string_val;
@@ -50,11 +51,13 @@ module printer (
       tx_enable_reg <= 0;
       data_out_r <= 0;
       pointer <= 0;
+      string_reg <= 0;
     end else begin
       case (state)
         IDLE: begin
           done <= 0;
           pointer <= 0;
+          string_reg <= 0;
 
           if (enable) begin
             state <= SET_STRING;
@@ -62,10 +65,11 @@ module printer (
         end
         SET_STRING: begin
           pointer <= length - 1;
-          state   <= SEND_TO_PRINT;
+          string_reg <= string_val;
+          state <= SEND_TO_PRINT;
         end
         SEND_TO_PRINT: begin
-          data_out_r <= string_val[pointer*8+:8];
+          data_out_r <= string_reg[pointer*8+:8];
           tx_enable_reg <= 1;
           state <= WAIT_PRINT;
         end

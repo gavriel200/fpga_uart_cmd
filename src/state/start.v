@@ -14,15 +14,16 @@ module start (
 );
 
   localparam INIT = 4'd0;
-  localparam SENDING = 4'd1;
-  localparam DONE = 4'd2;
+  localparam SET_STR = 4'd1;
+  localparam SENDING = 4'd2;
+  localparam DONE = 4'd3;
 
   reg [1:0] state = INIT;
   assign start_state = state;
 
   assign start_done  = state == DONE;
 
-  reg [1:0] start_str_id;
+  reg [1:0] start_str_id = 4'd0;
   assign printer_str_id = start_str_id;
 
   reg printer_enable_r = 0;
@@ -35,10 +36,14 @@ module start (
       case (state)
         INIT: begin
           if (enable) begin
-            state <= SENDING;
+            state <= SET_STR;
             printer_enable_r <= 1;
-            start_str_id <= 4'd0;
           end
+        end
+
+
+        SET_STR: begin
+          state <= SENDING;
         end
 
         SENDING: begin
@@ -51,7 +56,6 @@ module start (
 
         DONE: begin
           state <= INIT;
-          start_str_id <= 4'd0;
         end
       endcase
     end

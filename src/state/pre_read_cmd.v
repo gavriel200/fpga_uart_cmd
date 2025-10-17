@@ -15,15 +15,15 @@ module pre_read_cmd (
 );
 
   localparam IDLE = 4'd0;
-  localparam SENDING = 4'd1;
-  localparam DONE = 4'd2;
+  localparam SET_STR = 4'd1;
+  localparam SENDING = 4'd2;
 
   reg [1:0] state = IDLE;
 
   reg pre_read_cmd_done_reg = 0;
   assign pre_read_cmd_done = pre_read_cmd_done_reg;
 
-  reg [1:0] shell_str_id = 0;
+  reg [1:0] shell_str_id = 4'd1;
   assign printer_str_id = shell_str_id;
 
   reg printer_enable_r = 0;
@@ -33,7 +33,6 @@ module pre_read_cmd (
     if (reset) begin
       state <= IDLE;
       pre_read_cmd_done_reg <= 0;
-      shell_str_id <= 0;
       printer_enable_r <= 0;
     end else begin
       case (state)
@@ -41,10 +40,15 @@ module pre_read_cmd (
           pre_read_cmd_done_reg <= 0;
 
           if (enable) begin
-            state <= SENDING;
+            state <= SET_STR;
             printer_enable_r <= 1;
-            shell_str_id <= 1;
           end
+        end
+
+
+
+        SET_STR: begin
+          state <= SENDING;
         end
 
         SENDING: begin
@@ -53,7 +57,6 @@ module pre_read_cmd (
           if (printer_done) begin
             state <= IDLE;
             pre_read_cmd_done_reg <= 1;
-            shell_str_id <= 0;
           end
         end
       endcase

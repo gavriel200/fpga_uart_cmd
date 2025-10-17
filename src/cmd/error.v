@@ -13,8 +13,9 @@ module error (
 );
 
   localparam IDLE = 4'd0;
-  localparam RUN = 4'd1;
-  localparam DONE = 4'd2;
+  localparam SET_STR = 4'd1;
+  localparam RUN = 4'd2;
+  localparam DONE = 4'd3;
 
   reg [1:0] state = IDLE;
 
@@ -24,7 +25,7 @@ module error (
   reg printer_enable_r = 0;
   assign printer_enable = printer_enable_r;
 
-  reg [1:0] error_str_id = 0;
+  reg [1:0] error_str_id = 4'd2;
   assign printer_str_id = error_str_id;
 
   always @(posedge clk) begin
@@ -32,19 +33,20 @@ module error (
       state <= IDLE;
       error_done_reg <= 0;
       printer_enable_r <= 0;
-      error_str_id <= 0;
     end else begin
       case (state)
         IDLE: begin
           error_done_reg <= 0;
 
           if (enable) begin
-            state <= RUN;
+            state <= SET_STR;
             printer_enable_r <= 1;
-            error_str_id <= 4'd2;
           end
         end
 
+        SET_STR: begin
+          state <= RUN;
+        end
 
         RUN: begin
           printer_enable_r <= 0;
@@ -52,7 +54,6 @@ module error (
           if (printer_done) begin
             state <= IDLE;
             error_done_reg <= 1;
-            error_str_id <= 4'd0;
           end
         end
       endcase

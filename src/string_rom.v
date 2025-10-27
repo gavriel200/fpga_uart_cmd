@@ -1,13 +1,14 @@
 module string_rom (
-    input [1:0] id,
+    input [2:0] id,
     output reg [32*8-1:0] string_val,
     output reg [4:0] length
 );
 
-  localparam START = 4'd0;
-  localparam SHELL = 4'd1;
-  localparam ERROR = 4'd2;
-  localparam PONG = 4'd3;
+  localparam START = 8'd0;
+  localparam SHELL = 8'd1;
+  localparam ERROR = 8'd2;
+  localparam PONG = 8'd3;
+  localparam HELP = 8'd4;
 
   always @(*) begin
     case (id)
@@ -26,6 +27,23 @@ module string_rom (
       PONG: begin
         string_val = {8'h0D, 8'h0A, 8'h0D, "PONG"};
         length = 7;
+      end
+      HELP: begin
+        string_val = {
+          8'h0D,
+          8'h0A,
+          8'h0D,
+          "commands:",
+          8'h0D,
+          8'h0A,
+          8'h0D,
+          "- help",
+          8'h0D,
+          8'h0A,
+          8'h0D,
+          "- ping"
+        };
+        length = 30;
       end
     endcase
   end

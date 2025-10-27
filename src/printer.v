@@ -2,7 +2,7 @@ module printer (
     input clk,
     input reset,
 
-    input [1:0] str_id,
+    input [2:0] str_id,
     input enable,
 
     input [1:0] tx_state,

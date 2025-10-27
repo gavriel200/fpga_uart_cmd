@@ -9,7 +9,7 @@ module start (
     output [1:0] start_state,
     output start_done,
 
-    output [1:0] printer_str_id,
+    output [2:0] printer_str_id,
     output printer_enable
 );
 
@@ -23,7 +23,7 @@ module start (
 
   assign start_done  = state == DONE;
 
-  reg [1:0] start_str_id = 4'd0;
+  reg [2:0] start_str_id = 8'd0;
   assign printer_str_id = start_str_id;
 
   reg printer_enable_r = 0;

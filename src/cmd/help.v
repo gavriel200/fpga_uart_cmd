@@ -1,12 +1,12 @@
-module ping_cmd (
+module help_cmd (
     input [32*8-1:0] cmd,
     output valid
 );
 
-  localparam [32*8-1:0] ping_data = "gnip";  // ping
+  localparam [32*8-1:0] help_data = "pleh";  // help
 
   always @(*) begin
-    if (cmd == ping_data) begin
+    if (cmd == help_data) begin
       valid = 1;
     end else begin
       valid = 0;
@@ -14,13 +14,13 @@ module ping_cmd (
   end
 endmodule
 
-module ping (
+module help (
     input clk,
     input reset,
 
     // private
     input  enable,
-    output ping_done,
+    output help_done,
 
     // printer
     input printer_done,
@@ -35,24 +35,24 @@ module ping (
 
   reg [1:0] state = IDLE;
 
-  reg ping_done_reg = 0;
-  assign ping_done = ping_done_reg;
+  reg help_done_reg = 0;
+  assign help_done = help_done_reg;
 
   reg printer_enable_r = 0;
   assign printer_enable = printer_enable_r;
 
-  reg [2:0] ping_str_id = 8'd3;
-  assign printer_str_id = ping_str_id;
+  reg [2:0] help_str_id = 8'd4;
+  assign printer_str_id = help_str_id;
 
   always @(posedge clk) begin
     if (reset) begin
       state <= IDLE;
-      ping_done_reg <= 0;
+      help_done_reg <= 0;
       printer_enable_r <= 0;
     end else begin
       case (state)
         IDLE: begin
-          ping_done_reg <= 0;
+          help_done_reg <= 0;
 
           if (enable) begin
             state <= SET_STR;
@@ -69,7 +69,7 @@ module ping (
 
           if (printer_done) begin
             state <= IDLE;
-            ping_done_reg <= 1;
+            help_done_reg <= 1;
           end
         end
       endcase

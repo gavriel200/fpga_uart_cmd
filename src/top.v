@@ -62,19 +62,22 @@ module top (
   wire start_printer_enable;
   wire pre_read_cmd_printer_enable;
   wire ping_printer_enable;
+  wire help_printer_enable;
   wire error_printer_enable;
   wire printer_enable;
 
-  assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable | ping_printer_enable |error_printer_enable ;
+  assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable | ping_printer_enable | help_printer_enable |error_printer_enable ;
 
-  wire [1:0] start_printer_str_id;
-  wire [1:0] pre_read_cmd_printer_str_id;
-  wire [1:0] ping_printer_str_id;
-  wire [1:0] error_printer_str_id;
-  wire [1:0] printer_str_id;
+  wire [2:0] start_printer_str_id;
+  wire [2:0] pre_read_cmd_printer_str_id;
+  wire [2:0] ping_printer_str_id;
+  wire [2:0] help_printer_str_id;
+  wire [2:0] error_printer_str_id;
+  wire [2:0] printer_str_id;
   assign printer_str_id = start_printer_enable ? start_printer_str_id :
                        pre_read_cmd_printer_enable ? pre_read_cmd_printer_str_id :
                        ping_printer_enable ? ping_printer_str_id :
+                       help_printer_enable ? help_printer_str_id :
                        error_printer_enable ? error_printer_str_id :
                        2'b00;
 
@@ -110,6 +113,19 @@ module top (
       .printer_done(printer_done),
       .printer_str_id(ping_printer_str_id),
       .printer_enable(ping_printer_enable)
+  );
+
+  // help
+  wire help_enable;
+  wire help_done;
+  help(
+      .clk(clk),
+      .reset(reset),
+      .enable(help_enable),
+      .help_done(help_done),
+      .printer_done(printer_done),
+      .printer_str_id(help_printer_str_id),
+      .printer_enable(help_printer_enable)
   );
 
   // error
@@ -179,6 +195,20 @@ module top (
       .data_out(read_cmd_data_out)
   );
 
+
+  // ping_cmd
+  wire ping_cmd_valid;
+  ping_cmd(
+      .cmd(cmd), .ping_cmd_valid(ping_cmd_valid)
+  );
+
+
+  // help_cmd
+  wire help_cmd_valid;
+  help_cmd(
+      .cmd(cmd), .help_cmd_valid(help_cmd_valid)
+  );
+
   // run_cmd
   reg run_cmd_enable = 0;
   wire run_cmd_done;
@@ -196,6 +226,9 @@ module top (
       // ping
       .ping_enable(ping_enable),
       .ping_done(ping_done),
+      // ping
+      .help_enable(help_enable),
+      .help_done(help_done),
       // error
       .error_enable(error_enable),
       .error_done(error_done),

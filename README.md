@@ -1,6 +1,8 @@
 - add help
-- add error for bad cmd
-- add ping cmd should print pong
+- the data from the rx should either flip or should push each value to the left (the idea is that i dont want to have in the cmd the value on check to be flipped)
 - add comand led control
-- remove the enable from the start state just make it stop at done
-- check if stated need or can just use done with prev_state
+- the done should not be a reg but a wire that checks the stated and prev state
+- add new logic for multiple commands seperated with spaces
+ - make it so after space (ignore multiple spaces) it would put it in a cmd of its own
+ - have like 3 to allow 3 params for the cmd
+ - for cmd check value check all the params

@@ -224,9 +224,11 @@ module top (
       // ping
       .ping_enable(ping_enable),
       .ping_done(ping_done),
-      // ping
+      .ping_valid(ping_valid),
+      // help
       .help_enable(help_enable),
       .help_done(help_done),
+      .help_valid(help_valid),
       // error
       .error_enable(error_enable),
       .error_done(error_done),

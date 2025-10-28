@@ -8,6 +8,9 @@
             <Signal capture_enable="true">help_valid</Signal>
             <Signal capture_enable="true">no_cmd_valid</Signal>
             <Signal capture_enable="true">valid_cmd_debug</Signal>
+            <Signal capture_enable="true">ping_enable</Signal>
+            <Signal capture_enable="true">error_enable</Signal>
+            <Signal capture_enable="true">help_enable</Signal>
         </SignalList>
         <Triggers>
             <Trigger index="0">
@@ -53,5 +56,5 @@
             <Expression>M0</Expression>
         </Expressions>
     </AoCore>
-    <GAO_ID>0100011101010001</GAO_ID>
+    <GAO_ID>1011110000100010</GAO_ID>
 </GAO_CONFIG>

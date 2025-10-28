@@ -1,19 +1,3 @@
-module ping_cmd (
-    input [32*8-1:0] cmd,
-    output valid
-);
-
-  localparam [32*8-1:0] ping_data = "gnip";  // ping
-
-  always @(*) begin
-    if (cmd == ping_data) begin
-      valid = 1;
-    end else begin
-      valid = 0;
-    end
-  end
-endmodule
-
 module ping (
     input clk,
     input reset,
@@ -22,11 +6,17 @@ module ping (
     input  enable,
     output ping_done,
 
+    // cmd validation
+    input [32*8-1:0] cmd,
+    output valid,
+
     // printer
     input printer_done,
     output [2:0] printer_str_id,
     output printer_enable
 );
+  localparam [32*8-1:0] ping_data = "gnip";  // ping
+  assign valid = cmd == ping_data;
 
   localparam IDLE = 4'd0;
   localparam SET_STR = 4'd1;

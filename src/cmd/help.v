@@ -1,19 +1,3 @@
-module help_cmd (
-    input [32*8-1:0] cmd,
-    output valid
-);
-
-  localparam [32*8-1:0] help_data = "pleh";  // help
-
-  always @(*) begin
-    if (cmd == help_data) begin
-      valid = 1;
-    end else begin
-      valid = 0;
-    end
-  end
-endmodule
-
 module help (
     input clk,
     input reset,
@@ -22,11 +6,17 @@ module help (
     input  enable,
     output help_done,
 
+    // cmd validation
+    input [32*8-1:0] cmd,
+    output valid,
+
     // printer
     input printer_done,
     output [2:0] printer_str_id,
     output printer_enable
 );
+  localparam [32*8-1:0] help_data = "pleh";  // help
+  assign valid = cmd == help_data;
 
   localparam IDLE = 4'd0;
   localparam SET_STR = 4'd1;

@@ -4,49 +4,15 @@
     <Mode>Standard</Mode>
     <AoCore index="0" sample_clock="clk" trig_type="0" storage_depth="1024" window_num="1" capture_amount="1024" implementation="0" trigger_pos="0" module_name="top" force_trigger_by_falling_edge="false" capture_init_data_enabled="false">
         <SignalList>
-            <Bus capture_enable="true" name="start_printer_str_id[1:0]">
-                <Signal>start_printer_str_id[1]</Signal>
-                <Signal>start_printer_str_id[0]</Signal>
-            </Bus>
-            <Bus capture_enable="true" name="pre_read_cmd_printer_str_id[1:0]">
-                <Signal>pre_read_cmd_printer_str_id[1]</Signal>
-                <Signal>pre_read_cmd_printer_str_id[0]</Signal>
-            </Bus>
-            <Bus capture_enable="true" name="ping_printer_str_id[1:0]">
-                <Signal>ping_printer_str_id[1]</Signal>
-                <Signal>ping_printer_str_id[0]</Signal>
-            </Bus>
-            <Bus capture_enable="true" name="error_printer_str_id[1:0]">
-                <Signal>error_printer_str_id[1]</Signal>
-                <Signal>error_printer_str_id[0]</Signal>
-            </Bus>
-            <Bus capture_enable="true" name="printer_str_id[1:0]">
-                <Signal>printer_str_id[1]</Signal>
-                <Signal>printer_str_id[0]</Signal>
-            </Bus>
-            <Signal capture_enable="true">start_printer_enable</Signal>
-            <Signal capture_enable="true">pre_read_cmd_printer_enable</Signal>
-            <Signal capture_enable="true">ping_printer_enable</Signal>
-            <Signal capture_enable="true">error_printer_enable</Signal>
-            <Signal capture_enable="true">printer_enable</Signal>
-            <Signal capture_enable="true">ping_enable</Signal>
-            <Signal capture_enable="true">error_enable</Signal>
-            <Signal capture_enable="true">start_enable</Signal>
-            <Signal capture_enable="true">pre_read_cmd_enable</Signal>
-            <Signal capture_enable="true">read_cmd_enable</Signal>
-            <Signal capture_enable="true">run_cmd_enable</Signal>
-            <Signal capture_enable="true">printer_done</Signal>
-            <Signal capture_enable="true">ping_done</Signal>
-            <Signal capture_enable="true">error_done</Signal>
-            <Signal capture_enable="true">start_done</Signal>
-            <Signal capture_enable="true">pre_read_cmd_done</Signal>
-            <Signal capture_enable="true">read_cmd_done</Signal>
-            <Signal capture_enable="true">run_cmd_done</Signal>
+            <Signal capture_enable="true">ping_valid</Signal>
+            <Signal capture_enable="true">help_valid</Signal>
+            <Signal capture_enable="true">no_cmd_valid</Signal>
+            <Signal capture_enable="true">valid_cmd_debug</Signal>
         </SignalList>
         <Triggers>
             <Trigger index="0">
                 <SignalList>
-                    <Signal>run_cmd_done</Signal>
+                    <Signal>run_cmd_enable</Signal>
                 </SignalList>
             </Trigger>
             <Trigger index="1"/>
@@ -87,5 +53,5 @@
             <Expression>M0</Expression>
         </Expressions>
     </AoCore>
-    <GAO_ID>0000001010001011</GAO_ID>
+    <GAO_ID>0100011101010001</GAO_ID>
 </GAO_CONFIG>

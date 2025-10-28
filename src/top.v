@@ -102,14 +102,20 @@ module top (
   // ================= cmd ==================
   // ========================================
 
+  // read_cmd - cmd validation
+  wire [32*8-1:0] cmd;
+
   // ping
   wire ping_enable;
   wire ping_done;
+  wire ping_valid;
   ping(
       .clk(clk),
       .reset(reset),
       .enable(ping_enable),
       .ping_done(ping_done),
+      .cmd(cmd),
+      .valid(ping_valid),
       .printer_done(printer_done),
       .printer_str_id(ping_printer_str_id),
       .printer_enable(ping_printer_enable)
@@ -118,11 +124,14 @@ module top (
   // help
   wire help_enable;
   wire help_done;
+  wire help_valid;
   help(
       .clk(clk),
       .reset(reset),
       .enable(help_enable),
       .help_done(help_done),
+      .cmd(cmd),
+      .valid(help_valid),
       .printer_done(printer_done),
       .printer_str_id(help_printer_str_id),
       .printer_enable(help_printer_enable)
@@ -139,6 +148,11 @@ module top (
       .printer_done(printer_done),
       .printer_str_id(error_printer_str_id),
       .printer_enable(error_printer_enable)
+  );
+
+  wire no_cmd_valid;
+  no_cmd(
+      .cmd(cmd), .valid(no_cmd_valid)
   );
 
   // ========================================
@@ -176,9 +190,8 @@ module top (
   );
 
   // read_cmd
-  reg read_cmd_enable = 0;
+  reg  read_cmd_enable = 0;
   wire read_cmd_done;
-  wire [32*8-1:0] cmd;
   read_cmd(
       .clk(clk),
       .reset(reset),
@@ -195,25 +208,12 @@ module top (
       .data_out(read_cmd_data_out)
   );
 
-
-  // ping_cmd
-  wire ping_cmd_valid;
-  ping_cmd(
-      .cmd(cmd), .ping_cmd_valid(ping_cmd_valid)
-  );
-
-
-  // help_cmd
-  wire help_cmd_valid;
-  help_cmd(
-      .cmd(cmd), .help_cmd_valid(help_cmd_valid)
-  );
-
   // run_cmd
-  reg run_cmd_enable = 0;
+  reg  run_cmd_enable = 0;
   wire run_cmd_done;
   wire run_cmd_state;
-  wire [32*8-1:0] test_test;
+
+  wire valid_cmd_debug;
 
   run_cmd(
       .clk(clk),
@@ -221,8 +221,6 @@ module top (
       // private
       .enable(run_cmd_enable),
       .run_cmd_done(run_cmd_done),
-      // read_cmd
-      .cmd(cmd),
       // ping
       .ping_enable(ping_enable),
       .ping_done(ping_done),
@@ -232,9 +230,9 @@ module top (
       // error
       .error_enable(error_enable),
       .error_done(error_done),
-      // test
-      .run_cmd_state(run_cmd_state),
-      .test_test(test_test)
+      // no_cmd
+      .no_cmd_valid(no_cmd_valid),
+      .valid_cmd_debug(valid_cmd_debug)
   );
 
 

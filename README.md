@@ -1,3 +1,4 @@
-- add help arg to ping and to help
-- add comand led control
 - the done should not be a reg but a wire that checks the stated and prev state
+- more cleanup
+- add normal readme
+- maybe add history. or is it too much

@@ -7,6 +7,7 @@
     <FileList>
         <File path="src/cmd/error.v" type="file.verilog" enable="1"/>
         <File path="src/cmd/help.v" type="file.verilog" enable="1"/>
+        <File path="src/cmd/led.v" type="file.verilog" enable="1"/>
         <File path="src/cmd/no_cmd.v" type="file.verilog" enable="1"/>
         <File path="src/cmd/ping.v" type="file.verilog" enable="1"/>
         <File path="src/printer.v" type="file.verilog" enable="1"/>

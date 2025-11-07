@@ -12,6 +12,7 @@ module string_rom (
   localparam HELP = 8'd4;
   localparam HELP_HELP = 8'd5;
   localparam PING_HELP = 8'd6;
+  localparam LED_HELP = 8'd7;
 
   always @(*) begin
     case (id)
@@ -55,6 +56,10 @@ module string_rom (
       PING_HELP: begin
         string_val = {8'h0D, 8'h0A, 8'h0D, "ping: returns pong"};
         length = 21;
+      end
+      LED_HELP: begin
+        string_val = {8'h0D, 8'h0A, 8'h0D, "led [on/off] [1/2/3/4]"};
+        length = 25;
       end
     endcase
   end

@@ -11,6 +11,11 @@ module run_cmd (
     input  ping_done,
     input  ping_valid,
 
+    // led
+    output led_enable,
+    input  led_done,
+    input  led_valid,
+
     // help
     output help_enable,
     input  help_done,
@@ -39,15 +44,16 @@ module run_cmd (
 
   reg enable_cmd_reg = 0;
   assign ping_enable  = ping_valid ? enable_cmd_reg : 0;
+  assign led_enable   = led_valid ? enable_cmd_reg : 0;
   assign help_enable  = help_valid ? enable_cmd_reg : 0;
   assign error_enable = error_valid ? enable_cmd_reg : 0;
 
   wire valid_cmd;
-  assign valid_cmd = ping_valid | help_valid | no_cmd_valid;
+  assign valid_cmd = ping_valid | led_valid | help_valid | no_cmd_valid;
   assign valid_cmd_debug = valid_cmd;
 
   wire cmd_done;
-  assign cmd_done = ping_done | help_done | error_done;
+  assign cmd_done = ping_done | led_done | help_done | error_done;
 
   always @(posedge clk) begin
     if (reset) begin

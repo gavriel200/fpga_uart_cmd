@@ -2,7 +2,12 @@ module top (
     input clk,
 
     input  rst_btn,
-    output led,
+    output rst_led,
+
+    output led_1,
+    output led_2,
+    output led_3,
+    output led_4,
 
     input  rx,
     output tx
@@ -26,7 +31,7 @@ module top (
   );
 
   // reset debug
-  assign led = !reset;
+  assign rst_led = !reset;
 
   // tx
   wire printer_tx_enable;
@@ -63,21 +68,24 @@ module top (
   wire start_printer_enable;
   wire pre_read_cmd_printer_enable;
   wire ping_printer_enable;
+  wire led_printer_enable;
   wire help_printer_enable;
   wire error_printer_enable;
   wire printer_enable;
 
-  assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable | ping_printer_enable | help_printer_enable |error_printer_enable ;
+  assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable | ping_printer_enable | led_printer_enable | help_printer_enable |error_printer_enable ;
 
   wire [3:0] start_printer_str_id;
   wire [3:0] pre_read_cmd_printer_str_id;
   wire [3:0] ping_printer_str_id;
+  wire [3:0] led_printer_str_id;
   wire [3:0] help_printer_str_id;
   wire [3:0] error_printer_str_id;
   wire [3:0] printer_str_id;
   assign printer_str_id = start_printer_enable ? start_printer_str_id :
                        pre_read_cmd_printer_enable ? pre_read_cmd_printer_str_id :
                        ping_printer_enable ? ping_printer_str_id :
+                       led_printer_enable ? led_printer_str_id :
                        help_printer_enable ? help_printer_str_id :
                        error_printer_enable ? error_printer_str_id :
                        2'b00;
@@ -124,6 +132,27 @@ module top (
       .printer_done(printer_done),
       .printer_str_id(ping_printer_str_id),
       .printer_enable(ping_printer_enable)
+  );
+
+  wire led_enable;
+  wire led_done;
+  wire led_valid;
+  led(
+      .clk(clk),
+      .reset(reset),
+      .enable(led_enable),
+      .led_done(led_done),
+      .cmd(cmd),
+      .arg_1(arg_1),
+      .arg_2(arg_2),
+      .valid(led_valid),
+      .printer_done(printer_done),
+      .printer_str_id(led_printer_str_id),
+      .printer_enable(led_printer_enable),
+      .led_1(led_1),
+      .led_2(led_2),
+      .led_3(led_3),
+      .led_4(led_4)
   );
 
   // help
@@ -248,6 +277,10 @@ module top (
       .ping_enable(ping_enable),
       .ping_done(ping_done),
       .ping_valid(ping_valid),
+      // led
+      .led_enable(led_enable),
+      .led_done(led_done),
+      .led_valid(led_valid),
       // help
       .help_enable(help_enable),
       .help_done(help_done),

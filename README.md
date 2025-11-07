@@ -1,6 +1,3 @@
-- add new logic for multiple commands seperated with spaces
- - make it so after space (ignore multiple spaces) it would put it in a cmd of its own
- - have like 3 to allow 3 params for the cmd
- - for cmd check value check all the params
+- add help arg to ping and to help
 - add comand led control
 - the done should not be a reg but a wire that checks the stated and prev state

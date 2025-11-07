@@ -8,6 +8,8 @@ module ping (
 
     // cmd validation
     input [8*32-1:0] cmd,
+    input [8*32-1:0] arg_1,
+    input [8*32-1:0] arg_2,
     output valid,
 
     // printer
@@ -16,7 +18,8 @@ module ping (
     output printer_enable
 );
   localparam [8*32-1:0] ping_data = "ping";  // ping
-  assign valid = cmd == ping_data;
+  localparam [8*32-1:0] no_cmd_data = 0;
+  assign valid = cmd == ping_data && arg_1 == no_cmd_data && arg_2 == no_cmd_data;
 
   localparam IDLE = 4'd0;
   localparam SET_STR = 4'd1;

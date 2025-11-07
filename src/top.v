@@ -8,12 +8,13 @@ module top (
     output tx
 );
 
-  localparam START = 3'd0;
-  localparam CMD_PRE_READ = 3'd1;
-  localparam CMD_READ = 3'd2;
-  localparam CMD_RUN = 3'd3;
+  localparam START = 4'd0;
+  localparam CMD_PRE_READ = 4'd1;
+  localparam CMD_READ = 4'd2;
+  localparam CMD_ARG = 4'd3;
+  localparam CMD_RUN = 4'd4;
 
-  reg [1:0] state = START;
+  reg [2:0] state = START;
   reg [7:0] cmd_buffer;
   reg [2:0] cmd_buffer_ptr;
 
@@ -104,6 +105,8 @@ module top (
 
   // read_cmd - cmd validation
   wire [8*32-1:0] cmd;
+  wire [8*32-1:0] arg_1;
+  wire [8*32-1:0] arg_2;
 
   // ping
   wire ping_enable;
@@ -115,6 +118,8 @@ module top (
       .enable(ping_enable),
       .ping_done(ping_done),
       .cmd(cmd),
+      .arg_1(arg_1),
+      .arg_2(arg_2),
       .valid(ping_valid),
       .printer_done(printer_done),
       .printer_str_id(ping_printer_str_id),
@@ -131,6 +136,8 @@ module top (
       .enable(help_enable),
       .help_done(help_done),
       .cmd(cmd),
+      .arg_1(arg_1),
+      .arg_2(arg_2),
       .valid(help_valid),
       .printer_done(printer_done),
       .printer_str_id(help_printer_str_id),
@@ -152,7 +159,7 @@ module top (
 
   wire no_cmd_valid;
   no_cmd(
-      .cmd(cmd), .valid(no_cmd_valid)
+      .cmd(cmd), .arg_1(arg_1), .arg_2(arg_2), .valid(no_cmd_valid)
   );
 
   // ========================================
@@ -190,15 +197,16 @@ module top (
   );
 
   // read_cmd
-  reg  read_cmd_enable = 0;
+  reg read_cmd_enable = 0;
   wire read_cmd_done;
+  wire [32*8-1:0] raw_cmd;
   read_cmd(
       .clk(clk),
       .reset(reset),
       // private
       .enable(read_cmd_enable),
       .read_cmd_done(read_cmd_done),
-      .cmd(cmd),
+      .raw_cmd(raw_cmd),
       // rx
       .rx_done(rx_done),
       .rx_state(rx_state),
@@ -206,6 +214,22 @@ module top (
       // tx
       .tx_enable(read_cmd_tx_enable),
       .data_out(read_cmd_data_out)
+  );
+
+  // arg_cmd
+  reg  arg_cmd_enable = 0;
+  wire arg_cmd_done;
+  arg_cmd(
+      .clk(clk),
+      .reset(reset),
+      // private
+      .enable(arg_cmd_enable),
+      .arg_cmd_done(arg_cmd_done),
+      // cmd
+      .raw_cmd(raw_cmd),
+      .cmd(cmd),
+      .arg_1(arg_1),
+      .arg_2(arg_2)
   );
 
   // run_cmd
@@ -268,6 +292,15 @@ module top (
           read_cmd_enable <= 0;
 
           if (read_cmd_done) begin
+            state <= CMD_ARG;
+            arg_cmd_enable <= 1;
+          end
+        end
+
+        CMD_ARG: begin
+          arg_cmd_enable <= 0;
+
+          if (arg_cmd_done) begin
             state <= CMD_RUN;
             run_cmd_enable <= 1;
           end

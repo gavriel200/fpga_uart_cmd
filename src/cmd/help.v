@@ -8,6 +8,8 @@ module help (
 
     // cmd validation
     input [8*32-1:0] cmd,
+    input [8*32-1:0] arg_1,
+    input [8*32-1:0] arg_2,
     output valid,
 
     // printer
@@ -16,7 +18,8 @@ module help (
     output printer_enable
 );
   localparam [8*32-1:0] help_data = "help";  // help
-  assign valid = cmd == help_data;
+  localparam [8*32-1:0] no_cmd_data = 0;
+  assign valid = cmd == help_data && arg_1 == no_cmd_data && arg_2 == no_cmd_data;
 
   localparam IDLE = 4'd0;
   localparam SET_STR = 4'd1;

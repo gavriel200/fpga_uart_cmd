@@ -5,7 +5,7 @@ module read_cmd (
     // private
     input enable,
     output read_cmd_done,
-    output [8*32-1:0] cmd,
+    output [8*32-1:0] raw_cmd,
 
     // rx
     input rx_done,
@@ -24,13 +24,13 @@ module read_cmd (
   localparam enter = 8'h0D;
   localparam backspace = 8'h7f;
 
-  reg [ 1:0] state = IDLE;
+  reg [1:0] state = IDLE;
 
-  reg [31:0] pointer_reg = 0;
+  reg [7:0] pointer_reg = 0;
   assign pointer = pointer_reg;
 
-  reg [8*32-1:0] cmd_reg = 0;
-  assign cmd = cmd_reg;
+  reg [8*32-1:0] raw_cmd_reg = 0;
+  assign raw_cmd = raw_cmd_reg;
 
   reg read_cmd_done_reg = 0;
   assign read_cmd_done = read_cmd_done_reg;
@@ -46,7 +46,7 @@ module read_cmd (
     if (reset) begin
       state             <= IDLE;
       pointer_reg       <= 0;
-      cmd_reg           <= 0;
+      raw_cmd_reg       <= 0;
       read_cmd_done_reg <= 0;
       data_out_reg      <= 0;
       tx_enable_reg     <= 0;
@@ -57,8 +57,8 @@ module read_cmd (
           pointer_reg <= 0;
 
           if (enable) begin
-            state   <= READ;
-            cmd_reg <= 0;
+            state <= READ;
+            raw_cmd_reg <= 0;
           end
         end
 
@@ -74,9 +74,9 @@ module read_cmd (
             end else if (data_in == backspace) begin
               if (pointer_reg > 0) begin
                 tx_enable_reg <= 1;
-                data_out_reg <= data_in;
-                pointer_reg <= pointer_reg - 1;
-                cmd_reg <= {8'b0, cmd_reg[8*32-1:8]};
+                data_out_reg  <= data_in;
+                pointer_reg   <= pointer_reg - 1;
+                raw_cmd_reg   <= {8'b0, raw_cmd_reg[8*32-1:8]};
               end
 
             end else if (
@@ -104,11 +104,11 @@ module read_cmd (
                 // Backspace
                 (data_in == 8'h08)) begin
               if (pointer_reg < 31) begin
-                pointer_reg <= pointer_reg + 1;
+                pointer_reg   <= pointer_reg + 1;
                 tx_enable_reg <= 1;
-                data_out_reg <= data_in;
+                data_out_reg  <= data_in;
 
-                cmd_reg <= {cmd_reg[8*31-1:0], data_in};
+                raw_cmd_reg   <= {raw_cmd_reg[8*31-1:0], data_in};
               end
             end
           end

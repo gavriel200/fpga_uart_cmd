@@ -26,13 +26,12 @@ module run_cmd (
     // debug
     output valid_cmd_debug
 );
-  localparam IDLE = 4'd0;
-  localparam CMD = 4'd1;
-  localparam WAIT = 4'd2;
+  localparam IDLE = 2'd0;
+  localparam WAIT = 2'd1;
 
   localparam [8*32-1:0] NO_CMD = 0;
 
-  reg [1:0] state = IDLE;
+  reg state = IDLE;
   reg run_cmd_done_reg = 0;
   assign run_cmd_done = run_cmd_done_reg;
 

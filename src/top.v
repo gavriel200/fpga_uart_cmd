@@ -69,12 +69,12 @@ module top (
 
   assign printer_enable = start_printer_enable | pre_read_cmd_printer_enable | ping_printer_enable | help_printer_enable |error_printer_enable ;
 
-  wire [2:0] start_printer_str_id;
-  wire [2:0] pre_read_cmd_printer_str_id;
-  wire [2:0] ping_printer_str_id;
-  wire [2:0] help_printer_str_id;
-  wire [2:0] error_printer_str_id;
-  wire [2:0] printer_str_id;
+  wire [3:0] start_printer_str_id;
+  wire [3:0] pre_read_cmd_printer_str_id;
+  wire [3:0] ping_printer_str_id;
+  wire [3:0] help_printer_str_id;
+  wire [3:0] error_printer_str_id;
+  wire [3:0] printer_str_id;
   assign printer_str_id = start_printer_enable ? start_printer_str_id :
                        pre_read_cmd_printer_enable ? pre_read_cmd_printer_str_id :
                        ping_printer_enable ? ping_printer_str_id :
@@ -192,8 +192,7 @@ module top (
       .printer_done(printer_done),
       .pre_read_cmd_done(pre_read_cmd_done),
       .printer_str_id(pre_read_cmd_printer_str_id),
-      .printer_enable(pre_read_cmd_printer_enable),
-      .pre_read_cmd_state(pre_read_cmd_state)
+      .printer_enable(pre_read_cmd_printer_enable)
   );
 
   // read_cmd

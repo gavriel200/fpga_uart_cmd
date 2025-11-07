@@ -1,5 +1,6 @@
+
 module string_rom (
-    input [2:0] id,
+    input [3:0] id,
     output reg [8*32-1:0] string_val,
     output reg [4:0] length
 );
@@ -9,6 +10,8 @@ module string_rom (
   localparam ERROR = 8'd2;
   localparam PONG = 8'd3;
   localparam HELP = 8'd4;
+  localparam HELP_HELP = 8'd5;
+  localparam PING_HELP = 8'd6;
 
   always @(*) begin
     case (id)
@@ -44,6 +47,14 @@ module string_rom (
           "- ping"
         };
         length = 30;
+      end
+      HELP_HELP: begin
+        string_val = {8'h0D, 8'h0A, 8'h0D, "help: prints all the cmd"};
+        length = 27;
+      end
+      PING_HELP: begin
+        string_val = {8'h0D, 8'h0A, 8'h0D, "ping: returns pong"};
+        length = 21;
       end
     endcase
   end

@@ -14,12 +14,13 @@ module ping (
 
     // printer
     input printer_done,
-    output [2:0] printer_str_id,
+    output [3:0] printer_str_id,
     output printer_enable
 );
-  localparam [8*32-1:0] ping_data = "ping";  // ping
+  localparam [8*32-1:0] ping_data = "ping";
+  localparam [8*32-1:0] help_arg = "--help";
   localparam [8*32-1:0] no_cmd_data = 0;
-  assign valid = cmd == ping_data && arg_1 == no_cmd_data && arg_2 == no_cmd_data;
+  assign valid = cmd == ping_data && (arg_1 == no_cmd_data || arg_1 == help_arg) && arg_2 == no_cmd_data;
 
   localparam IDLE = 4'd0;
   localparam SET_STR = 4'd1;
@@ -34,8 +35,9 @@ module ping (
   reg printer_enable_r = 0;
   assign printer_enable = printer_enable_r;
 
-  reg [2:0] ping_str_id = 8'd3;
-  assign printer_str_id = ping_str_id;
+  reg [3:0] ping_str_id = 8'd3;
+  reg [3:0] ping_help_str_id = 8'd6;
+  assign printer_str_id = arg_1 == help_arg ? ping_help_str_id : ping_str_id;
 
   always @(posedge clk) begin
     if (reset) begin

@@ -8,10 +8,8 @@ module pre_read_cmd (
 
     output pre_read_cmd_done,
 
-    output [2:0] printer_str_id,
-    output printer_enable,
-
-    output [1:0] pre_read_cmd_state
+    output [3:0] printer_str_id,
+    output printer_enable
 );
 
   localparam IDLE = 4'd0;
@@ -23,7 +21,7 @@ module pre_read_cmd (
   reg pre_read_cmd_done_reg = 0;
   assign pre_read_cmd_done = pre_read_cmd_done_reg;
 
-  reg [2:0] shell_str_id = 8'd1;
+  reg [3:0] shell_str_id = 8'd1;
   assign printer_str_id = shell_str_id;
 
   reg printer_enable_r = 0;

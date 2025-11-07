@@ -8,7 +8,7 @@ module error (
 
     // printer
     input printer_done,
-    output [2:0] printer_str_id,
+    output [3:0] printer_str_id,
     output printer_enable
 );
 
@@ -25,7 +25,7 @@ module error (
   reg printer_enable_r = 0;
   assign printer_enable = printer_enable_r;
 
-  reg [2:0] error_str_id = 8'd2;
+  reg [3:0] error_str_id = 8'd2;
   assign printer_str_id = error_str_id;
 
   always @(posedge clk) begin

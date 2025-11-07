@@ -37,15 +37,19 @@ module string_rom (
           8'h0D,
           8'h0A,
           8'h0D,
-          "commands:",
+          "cmds:",
           8'h0D,
           8'h0A,
           8'h0D,
-          "- help",
+          "-help",
           8'h0D,
           8'h0A,
           8'h0D,
-          "- ping"
+          "-ping",
+          8'h0D,
+          8'h0A,
+          8'h0D,
+          "-led"
         };
         length = 30;
       end

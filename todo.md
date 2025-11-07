@@ -1,0 +1,3 @@
+- the done should not be a reg but a wire that checks the stated and prev state
+- more cleanup
+- maybe add history. or is it too much

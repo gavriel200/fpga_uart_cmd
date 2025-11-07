@@ -103,7 +103,7 @@ module top (
   // ========================================
 
   // read_cmd - cmd validation
-  wire [32*8-1:0] cmd;
+  wire [8*32-1:0] cmd;
 
   // ping
   wire ping_enable;

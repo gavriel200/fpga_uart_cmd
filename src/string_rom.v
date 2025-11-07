@@ -1,6 +1,6 @@
 module string_rom (
     input [2:0] id,
-    output reg [32*8-1:0] string_val,
+    output reg [8*32-1:0] string_val,
     output reg [4:0] length
 );
 

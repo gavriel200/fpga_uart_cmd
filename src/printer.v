@@ -33,10 +33,10 @@ module printer (
 
 
   reg [4:0] pointer;
-  reg [32*8-1:0] string_reg;
+  reg [8*32-1:0] string_reg;
 
   // string_rom
-  wire [32*8-1:0] string_val;
+  wire [8*32-1:0] string_val;
   wire [4:0] length;
   string_rom _string_rom (
       .id(str_id),

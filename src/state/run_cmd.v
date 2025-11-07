@@ -30,7 +30,7 @@ module run_cmd (
   localparam CMD = 4'd1;
   localparam WAIT = 4'd2;
 
-  localparam [32*8-1:0] NO_CMD = 0;
+  localparam [8*32-1:0] NO_CMD = 0;
 
   reg [1:0] state = IDLE;
   reg run_cmd_done_reg = 0;

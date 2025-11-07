@@ -1,8 +1,6 @@
-- fix valid_cmd error where its only valid for no_cmd_valid
-- the data from the rx should either flip or should push each value to the left (the idea is that i dont want to have in the cmd the value on check to be flipped)
-- add comand led control
-- the done should not be a reg but a wire that checks the stated and prev state
 - add new logic for multiple commands seperated with spaces
  - make it so after space (ignore multiple spaces) it would put it in a cmd of its own
  - have like 3 to allow 3 params for the cmd
  - for cmd check value check all the params
+- add comand led control
+- the done should not be a reg but a wire that checks the stated and prev state

@@ -7,7 +7,7 @@ module ping (
     output ping_done,
 
     // cmd validation
-    input [32*8-1:0] cmd,
+    input [8*32-1:0] cmd,
     output valid,
 
     // printer
@@ -15,7 +15,7 @@ module ping (
     output [2:0] printer_str_id,
     output printer_enable
 );
-  localparam [32*8-1:0] ping_data = "gnip";  // ping
+  localparam [8*32-1:0] ping_data = "ping";  // ping
   assign valid = cmd == ping_data;
 
   localparam IDLE = 4'd0;

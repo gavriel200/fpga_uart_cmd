@@ -5,7 +5,7 @@ module read_cmd (
     // private
     input enable,
     output read_cmd_done,
-    output [32*8-1:0] cmd,
+    output [8*32-1:0] cmd,
 
     // rx
     input rx_done,
@@ -29,7 +29,7 @@ module read_cmd (
   reg [31:0] pointer_reg = 0;
   assign pointer = pointer_reg;
 
-  reg [32*8-1:0] cmd_reg = 0;
+  reg [8*32-1:0] cmd_reg = 0;
   assign cmd = cmd_reg;
 
   reg read_cmd_done_reg = 0;
@@ -76,7 +76,7 @@ module read_cmd (
                 tx_enable_reg <= 1;
                 data_out_reg <= data_in;
                 pointer_reg <= pointer_reg - 1;
-                cmd_reg[pointer_reg*8+:8] <= 0;
+                cmd_reg <= {8'b0, cmd_reg[8*32-1:8]};
               end
 
             end else if (
@@ -108,9 +108,7 @@ module read_cmd (
                 tx_enable_reg <= 1;
                 data_out_reg <= data_in;
 
-                cmd_reg[pointer_reg*8+:8] <= data_in;
-                // 7 :0
-                // 15:8
+                cmd_reg <= {cmd_reg[8*31-1:0], data_in};
               end
             end
           end
